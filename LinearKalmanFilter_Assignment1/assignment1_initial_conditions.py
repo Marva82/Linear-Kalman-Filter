@@ -22,11 +22,11 @@ class KalmanFilterModel(KalmanFilterBase):
         # Set Initial State and Covariance (COMMENT OUT FOR DELAYED)
         init_pos_std = 0
         init_vel_std = 10
-        self.state = np.array([0,0,0,0])
-        self.covariance = np.diag(np.array([init_pos_std*init_pos_std,
+        #self.state = np.array([0,0,0,0])
+        """ self.covariance = np.diag(np.array([init_pos_std*init_pos_std,
                                             init_pos_std*init_pos_std,
                                             init_vel_std*init_vel_std,
-                                            init_vel_std*init_vel_std]))
+                                            init_vel_std*init_vel_std])) """
 
         # Setup the Model F Matrix
         dt = time_step
@@ -93,8 +93,10 @@ class KalmanFilterModel(KalmanFilterBase):
         else:
 
             # Set Initial State and Covariance 
-            return
+            init_vel_std = 10
             
+            self.state = np.array([measurement[0],measurement[1],0,0])
+            self.covariance = np.diag(np.array([self.R[0,0],self.R[1,1],init_vel_std*init_vel_std,init_vel_std*init_vel_std]))       
 
         return 
 

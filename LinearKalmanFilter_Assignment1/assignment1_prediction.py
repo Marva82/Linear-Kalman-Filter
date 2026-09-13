@@ -20,17 +20,22 @@ class KalmanFilterModel(KalmanFilterBase):
     def initialise(self, time_step):
 
         # Define a np.array 4x1 with the initial state (px,py,vx,vy)
-        #self.state = 
+        self.state = np.array([0,0,7.07,7.07]) 
 
         # Define a np.array 4x4 for the initial covariance
-        #self.covariance = 
+        self.covariance = np.diag(np.array([0,0,0,0]))
 
         # Setup the Model F Matrix
-        #self.F = 
+        dt = time_step
+        self.F = np.array([[1,0,dt,0],
+                           [0,1,0,dt],
+                           [0,0,1,0],
+                           [0,0,0,1]])
 
         # Set the Q Matrix
-        #self.Q = 
-        
+        accel_std = 0.1
+        self.Q = np.diag(np.array([(0.5*dt*dt),(0.5*dt*dt),dt,dt]) * (accel_std*accel_std))
+
         return
     
     def prediction_step(self):
@@ -42,10 +47,10 @@ class KalmanFilterModel(KalmanFilterBase):
             # Calculate Kalman Filter Prediction
             
             # State Prediction: x_predict = F * x
-            x_predict = x
+            x_predict = np.matmul(self.F, x) 
 
             # Covariance Prediction: P_predict = F * P * F' + Q 
-            P_predict = P
+            P_predict = np.matmul(self.F, np.matmul(P, np.transpose(self.F))) + self.Q
 
             # Save Predicted State
             self.state = x_predict
